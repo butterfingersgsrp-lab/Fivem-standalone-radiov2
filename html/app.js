@@ -31,6 +31,7 @@ let shuffleEnabled = false;
 let replayMode = 0;
 let lastEffectiveVolume = 0;
 let canControl = false;
+const RESYNC_THRESHOLD = 2.5;
 
 const sendNui = (event, data = {}) =>
     fetch(`https://${resourceName}/${event}`, {
@@ -165,13 +166,38 @@ const handleListenerUpdate = (payload) => {
     }
 
     currentNetId = payload.netId;
-    applyPlaybackState(payload.state, payload.state.currentTime || 0);
+    const nextState = payload.state;
+    const isSourceChange = !currentState
+        || nextState.sourceType !== currentState.sourceType
+        || nextState.videoId !== currentState.videoId
+        || nextState.playlistId !== currentState.playlistId
+        || nextState.currentIndex !== currentState.currentIndex;
+
+    if (isSourceChange) {
+        applyPlaybackState(nextState, nextState.currentTime || 0);
+    } else if (ensurePlayer()) {
+        const playerState = player.getPlayerState();
+        if (nextState.isPlaying && playerState !== window.YT.PlayerState.PLAYING) {
+            player.playVideo();
+        }
+        if (!nextState.isPlaying && playerState === window.YT.PlayerState.PLAYING) {
+            player.pauseVideo();
+        }
+
+        const currentTime = player.getCurrentTime ? player.getCurrentTime() : 0;
+        if (nextState.currentTime !== undefined && Math.abs(currentTime - nextState.currentTime) > RESYNC_THRESHOLD) {
+            player.seekTo(nextState.currentTime, true);
+        }
+
+        currentState = nextState;
+    }
     updateVolume(payload.effectiveVolume || 0);
     lastEffectiveVolume = payload.effectiveVolume || 0;
 };
 
 const handleListenerClear = () => {
     currentNetId = null;
+    currentState = null;
     if (ensurePlayer()) {
         player.stopVideo();
     }
