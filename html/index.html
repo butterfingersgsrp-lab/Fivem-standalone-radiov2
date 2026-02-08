@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vehicle Radio</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="radio" id="radio">
+        <header class="radio__header">
+            <h1>Vehicle Radio</h1>
+            <button class="icon-button" id="close">×</button>
+        </header>
+        <div class="radio__content">
+            <label class="field">
+                <span>YouTube URL or Playlist</span>
+                <input type="text" id="url" placeholder="https://www.youtube.com/watch?v=..." />
+            </label>
+            <div class="buttons">
+                <button class="primary" id="play">Play</button>
+                <button class="secondary" id="pause">Pause</button>
+                <button class="secondary" id="prev">Back</button>
+                <button class="secondary" id="next">Skip</button>
+            </div>
+            <div class="buttons">
+                <button class="secondary" id="shuffle">Shuffle: Off</button>
+                <button class="secondary" id="replay">Replay: Off</button>
+            </div>
+            <div class="slider-group">
+                <label class="field">
+                    <span>Radius (meters)</span>
+                    <input type="range" id="radius" min="0" max="400" value="100" />
+                    <output id="radiusValue">100</output>
+                </label>
+                <label class="field">
+                    <span>Volume</span>
+                    <input type="range" id="volume" min="0" max="100" value="60" />
+                    <output id="volumeValue">60</output>
+                </label>
+            </div>
+            <div class="status" id="status">Idle</div>
+        </div>
+    </div>
+
+    <div id="player"></div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="app.js"></script>
+</body>
+</html>
