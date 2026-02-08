@@ -68,7 +68,7 @@ AddEventHandler('playerSpawned', function()
     ensureUiClosed()
 end)
 
-RegisterCommand(Config.OpenCommand, function()
+local function openRadio()
     if not canUseRadio() then
         TriggerEvent('chat:addMessage', {
             color = {255, 150, 50},
@@ -82,9 +82,13 @@ RegisterCommand(Config.OpenCommand, function()
     setUiOpen(true)
 
     TriggerServerEvent('radio:requestState', currentVehicleNetId)
-end, false)
+end
 
-RegisterKeyMapping(Config.OpenCommand, 'Open car radio', 'keyboard', Config.OpenKey)
+RegisterCommand(Config.OpenCommand, openRadio, false)
+RegisterCommand('+' .. Config.OpenCommand, openRadio, false)
+RegisterCommand('-' .. Config.OpenCommand, function() end, false)
+
+RegisterKeyMapping('+' .. Config.OpenCommand, 'Open car radio', 'keyboard', Config.OpenKey)
 
 RegisterNUICallback('close', function(_, cb)
     setUiOpen(false)
