@@ -42,6 +42,32 @@ local function setUiOpen(state)
     })
 end
 
+local function ensureUiClosed()
+    if isUiOpen then
+        setUiOpen(false)
+        return
+    end
+
+    SetNuiFocus(false, false)
+    SetNuiFocusKeepInput(false)
+    SendNUIMessage({
+        type = 'setVisible',
+        visible = false
+    })
+end
+
+AddEventHandler('onResourceStart', function(resourceName)
+    if resourceName ~= GetCurrentResourceName() then
+        return
+    end
+
+    ensureUiClosed()
+end)
+
+AddEventHandler('playerSpawned', function()
+    ensureUiClosed()
+end)
+
 RegisterCommand(Config.OpenCommand, function()
     if not canUseRadio() then
         TriggerEvent('chat:addMessage', {
