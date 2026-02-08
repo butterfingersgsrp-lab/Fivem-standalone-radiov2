@@ -3,7 +3,7 @@ fx_version 'cerulean'
 game 'gta5'
 
 name 'fivem-standalone-radiov2'
-author 'OpenAI'
+author 'Butterfingers'
 version '2.0.0'
 
 description 'Standalone/ESX vehicle radio with YouTube support.'
